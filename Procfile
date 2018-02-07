@@ -1,1 +1,1 @@
-web: java -jar target/FactoryApp-1.0.jar
+web: java -jar target/FactoryApp-0.0.1-SNAPSHOT.jar
