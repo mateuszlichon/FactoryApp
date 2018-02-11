@@ -1,60 +1,53 @@
-package pl.lichon;
+package pl.lichon.config;
 
-import java.sql.SQLException;
-import java.util.Locale;
+import java.util.Properties;
 
 import javax.persistence.EntityManagerFactory;
-import javax.sql.DataSource;
 import javax.validation.Validator;
 
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Import;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
-import org.springframework.format.FormatterRegistry;
+import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.LocalEntityManagerFactoryBean;
-import org.springframework.security.access.SecurityConfig;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
-import org.springframework.web.servlet.LocaleContextResolver;
 import org.springframework.web.servlet.ViewResolver;
 import org.springframework.web.servlet.config.annotation.DefaultServletHandlerConfigurer;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
-import org.springframework.web.servlet.i18n.SessionLocaleResolver;
 import org.springframework.web.servlet.view.InternalResourceViewResolver;
 import org.springframework.web.servlet.view.JstlView;
 
-import com.zaxxer.hikari.HikariConfig;
-import com.zaxxer.hikari.HikariDataSource;
-
 
 @Configuration
-@ComponentScan(basePackages = { "pl.schoolmanager.bean", "pl.schoolmanager.controller", "pl.schoolmanager.entity" })
+@ComponentScan(basePackages = { "com.lichon"})
 @EnableWebMvc
 @EnableTransactionManagement
-@EnableJpaRepositories(basePackages = { "pl.schoolmanager.repository" })
-@Import({ SecurityConfig.class })
+@EnableJpaRepositories(basePackages = {"com.lichon.repository"})
 public class AppConfig extends WebMvcConfigurerAdapter {
-	
-	@Value("${spring.datasource.url}")
-	private String dbUrl;
-	
-	@Bean
-	public DataSource dataSource() throws SQLException {
-		if (dbUrl == null || dbUrl.isEmpty()) {
-			return new HikariDataSource();
-		} else {
-			HikariConfig config = new HikariConfig();
-			config.setJdbcUrl(dbUrl);
-			return new HikariDataSource(config);
+		
+	@Bean(name = "dataSource")
+	public DriverManagerDataSource dataSource() {
+	    DriverManagerDataSource driverManagerDataSource = new DriverManagerDataSource();
+	    driverManagerDataSource.setDriverClassName("com.mysql.jdbc.Driver");
+	    driverManagerDataSource.setUrl("jdbc:mysql://localhost:3306/factoryapp");
+	    driverManagerDataSource.setUsername("root");
+	    driverManagerDataSource.setPassword("coderslab");
+		
+	    String dbUrl = System.getenv("JDBC_DATABASE_URL");
+		if(dbUrl!=null) {
+			driverManagerDataSource.setDriverClassName("org.postgresql.Driver");
+			driverManagerDataSource.setUrl(dbUrl);
+			driverManagerDataSource.setUsername(System.getenv("JDBC_DATABASE_USERNAME"));
+			driverManagerDataSource.setPassword(System.getenv("JDBC_DATABASE_PASSWORD"));
 		}
+	    return driverManagerDataSource;
 	}
-
+	
 	@Bean
 	public ViewResolver viewResolver() {
 		InternalResourceViewResolver viewResolver = new InternalResourceViewResolver();
@@ -75,51 +68,33 @@ public class AppConfig extends WebMvcConfigurerAdapter {
 		configurer.enable();
 	}
 
-	 @Bean
-	 public LocalEntityManagerFactoryBean entityManagerFactory() {
-	 LocalEntityManagerFactoryBean emfb = new LocalEntityManagerFactoryBean();
-	 emfb.setPersistenceUnitName("schoolmanager2");
-	 return emfb;
-	 }
+	@Bean
+	public LocalEntityManagerFactoryBean entityManagerFactory() {
+		LocalEntityManagerFactoryBean emfb = new LocalEntityManagerFactoryBean();
+		emfb.setPersistenceUnitName("factoryapp");
+		String dbUrl = System.getenv("JDBC_DATABASE_URL");
+		if(dbUrl!=null) {
+			Properties jpaProperties = new Properties();
+			jpaProperties.put("javax.persistence.jdbc.url", System.getenv("JDBC_DATABASE_URL"));
+			jpaProperties.put("javax.persistence.jdbc.user", System.getenv("JDBC_DATABASE_USERNAME"));
+			jpaProperties.put("javax.persistence.jdbc.password", System.getenv("JDBC_DATABASE_PASSWORD"));
+			jpaProperties.put("javax.persistence.jdbc.driver", "org.postgresql.Driver");
+			jpaProperties.put("hibernate.dialect", "org.hibernate.dialect.PostgreSQLDialect");
+			emfb.setJpaProperties(jpaProperties);
+			emfb.afterPropertiesSet();
+		}
+		return emfb;
+	}
 
 	@Bean
 	public JpaTransactionManager transactionManager(EntityManagerFactory emf) {
 		JpaTransactionManager tm = new JpaTransactionManager(emf);
 		return tm;
 	}
-
-	@Bean(name = "localeResolver")
-	public LocaleContextResolver getLocaleContextResolver() {
-		SessionLocaleResolver localeResolver = new SessionLocaleResolver();
-		localeResolver.setDefaultLocale(new Locale("pl", "PL"));
-		return localeResolver;
-	}
-
+	
 	@Bean
 	public Validator validator() {
 		return new LocalValidatorFactoryBean();
 	}
 
-	@Override
-	public void addFormatters(FormatterRegistry registry) {
-/*		registry.addConverter(getSubjectConverter());
-		registry.addConverter(getStudentConverter());
-		registry.addConverter(getSchoolConverter());*/
-	}
-
-/*	@Bean
-	public SubjectConverter getSubjectConverter() {
-		return new SubjectConverter();
-	}
-
-	@Bean
-	public StudentConverter getStudentConverter() {
-		return new StudentConverter();
-	}
-
-	@Bean
-	public SchoolConverter getSchoolConverter() {
-		return new SchoolConverter();
-	}*/
-	
 }

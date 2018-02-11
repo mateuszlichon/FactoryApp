@@ -1,4 +1,4 @@
-package pl.lichon;
+package pl.lichon.config;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
