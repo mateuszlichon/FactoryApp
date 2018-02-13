@@ -24,10 +24,10 @@ import org.springframework.web.servlet.view.JstlView;
 
 
 @Configuration
-@ComponentScan(basePackages = { "com.lichon"})
+@ComponentScan(basePackages = { "pl.lichon"})
 @EnableWebMvc
 @EnableTransactionManagement
-@EnableJpaRepositories(basePackages = {"com.lichon.repository"})
+@EnableJpaRepositories(basePackages = {"pl.lichon.repository"})
 public class AppConfig extends WebMvcConfigurerAdapter {
 		
 	@Bean(name = "dataSource")
