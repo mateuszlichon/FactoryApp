@@ -1,6 +1,10 @@
 package pl.lichon.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -18,6 +22,16 @@ public class FactoryController {
 	@RequestMapping("/checkFactory")
 	public Factory checkFactory() {
 		return new Factory(1l, "FirstFactory", "Sweets");
+	}
+	
+	@GetMapping("/list")
+	public List<Factory> getList() {
+		return factoryRepository.findAll();
+	}
+	
+	@GetMapping("/{id}")
+	public Factory getFactory(@PathVariable long id) {
+		return factoryRepository.getOne(id);
 	}
 	
 	@RequestMapping("/testFactory")
