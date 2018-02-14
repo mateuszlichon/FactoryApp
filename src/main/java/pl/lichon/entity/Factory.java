@@ -19,6 +19,12 @@ public class Factory {
 	public Factory() {
 		super();
 	}
+	
+	public Factory(String name, String product) {
+		super();
+		this.name = name;
+		this.product = product;
+	}
 
 	public Factory(long id, String name, String product) {
 		super();
