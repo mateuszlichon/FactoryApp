@@ -20,6 +20,15 @@ public class Factory {
 		super();
 	}
 
+	public Factory(long id, String name, String product) {
+		super();
+		this.id = id;
+		this.name = name;
+		this.product = product;
+	}
+
+
+
 	public long getId() {
 		return id;
 	}
