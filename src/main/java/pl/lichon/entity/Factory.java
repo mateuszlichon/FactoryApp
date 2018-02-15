@@ -4,6 +4,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToOne;
 
 @Entity
 public class Factory {
@@ -15,6 +16,9 @@ public class Factory {
 	private String name;
 	
 	private String product;
+	
+	@OneToOne
+	private Supervisor supervisor;
 
 	public Factory() {
 		super();
@@ -32,8 +36,6 @@ public class Factory {
 		this.name = name;
 		this.product = product;
 	}
-
-
 
 	public long getId() {
 		return id;
@@ -58,6 +60,13 @@ public class Factory {
 	public void setProduct(String product) {
 		this.product = product;
 	}
-	
+
+	public Supervisor getSupervisor() {
+		return supervisor;
+	}
+
+	public void setSupervisor(Supervisor supervisor) {
+		this.supervisor = supervisor;
+	}
 	
 }
