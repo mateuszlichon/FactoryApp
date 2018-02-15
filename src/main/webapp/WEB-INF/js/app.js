@@ -24,4 +24,20 @@ $(function () {
     });
   }
 
+  // function renderList() {
+  //   $.ajax({
+  //     url: baseUrl + 'factory/list/',
+  //     type: 'GET',
+  //     dataType: 'json'
+  //   }).done(function (data) {
+  //     console.log(data);
+  //     factories.empty();
+  //     data.forEach(function (factory) {
+  //       factories.append('<li>' + factory.name + '</li>');
+  //     })
+  //   }).fail(function () {
+  //     console.log("error");
+  //   });
+  // }
+
 })
