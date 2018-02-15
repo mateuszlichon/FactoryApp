@@ -17,7 +17,7 @@ $(function () {
       console.log(data);
       factories.empty();
       data.forEach(function (factory) {
-        factories.append('<li>' + factory.name + '</li>');
+        factories.append('<li>' + factory.supervisor.firstName + '</li>');
       })
     }).fail(function () {
       console.log("error");

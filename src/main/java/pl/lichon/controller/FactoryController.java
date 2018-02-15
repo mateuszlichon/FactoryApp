@@ -47,6 +47,8 @@ public class FactoryController {
 	@RequestMapping("/testFactory")
 	@ResponseBody
 	public String testFactory() {
+		factoryRepository.deleteAll();
+		supervisorRepository.deleteAll();
 		Supervisor supervisor1 = new Supervisor("Joey", "Tribbiani");
 		supervisorRepository.save(supervisor1);
 		Supervisor supervisor2 = new Supervisor("Chandler", "Bing");
